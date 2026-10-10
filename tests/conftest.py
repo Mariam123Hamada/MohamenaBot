@@ -1,10 +1,16 @@
-import pytest 
-import json 
-from pathlib import Path 
+import json
+from pathlib import Path
+
+import pytest
 
 @pytest.fixture
 def corpus_data():
     json_path = Path(__file__).resolve().parent.parent / "src"/"data" / "processed_corpus.json"
-    assert json_path.exists(), f"Corpus JSON not found at {json_path}"
+    if not json_path.exists():
+        pytest.skip(
+            "Processed corpus is not present; retrieve it with DVC before "
+            "running corpus validation."
+        )
     with open(json_path, "r", encoding="utf-8") as f:
         return json.load(f)
+

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import tempfile
 from pathlib import Path
@@ -143,6 +144,9 @@ def run_mlflow_chunking_experiment(
     queries = [" ".join(words) for words in query_texts]
     query_article_numbers = [record["article_number"] for record in evaluation_articles]
 
+    mlflow.set_tracking_uri(
+        os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000")
+    )
     mlflow.set_experiment("MohamenaBot_Chunking")
     results: list[dict[str, Any]] = []
     best_run_id = ""

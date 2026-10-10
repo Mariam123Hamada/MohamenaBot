@@ -18,6 +18,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: pyproject.toml
       - name: Install project and development dependencies
         run: python -m pip install --upgrade pip && python -m pip install -e ".[dev,mlops]"
       - name: Lint
@@ -43,13 +44,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set lowercase image name
+        id: image_name
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
+        run: echo "image=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
       - name: Build and publish image for trusted pull requests
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:pr-${{ github.event.pull_request.number }}
+          tags: ghcr.io/${{ steps.image_name.outputs.image }}:pr-${{ github.event.pull_request.number }}
       - name: Build and publish image after merge
         if: github.event_name == 'push'
         uses: docker/build-push-action@v6
@@ -57,5 +63,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ steps.image_name.outputs.image }}:${{ github.sha }}
+            ghcr.io/${{ steps.image_name.outputs.image }}:latest

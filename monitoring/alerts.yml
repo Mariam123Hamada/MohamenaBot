@@ -1,0 +1,18 @@
+groups:
+  - name: mohamenabot
+    rules:
+      - alert: EmbeddingInputDriftHigh
+        expr: mohamenabot_embedding_input_drift > 1.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Embedding query is outside the corpus reference distribution"
+          description: "Review queries whose normalized embedding distance exceeds the corpus p95 threshold."
+      - alert: PredictionLatencyHigh
+        expr: histogram_quantile(0.95, sum(rate(mohamenabot_prediction_latency_seconds_bucket[5m])) by (le)) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MohamenaBot prediction p95 exceeds two seconds"

@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+env
 # Distribution / packaging
 .Python
 build/
@@ -204,6 +204,10 @@ cython_debug/
 # .vscode/
 # Temporary file for partial code execution
 tempCodeRunnerFile.py
+
+# Local model and monitoring outputs
+mlruns/
+reports/
 
 # Ruff stuff:
 .ruff_cache/

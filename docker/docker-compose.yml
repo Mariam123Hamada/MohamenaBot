@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mlflow-server:
+    build:
+      context: ..
+      dockerfile: docker/dockerfile.mlflow
+    container_name: mlflow_server
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_BACKEND_STORE_URI=sqlite:///mlflow.db 
+      - MLFLOW_DEFAULT_ARTIFACT_ROOT=/mlflow/artifacts
+    volumes:
+      - mlflow_data:/mlflow
+    restart: always
+
+  qdrant-db:
+    image: qdrant/qdrant:latest
+    container_name: qdrant_vector_db
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    restart: always
+
+volumes:
+  mlflow_data:
+  qdrant_storage:

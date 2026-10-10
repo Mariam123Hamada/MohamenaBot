@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: MohamenaBot
+    orgId: 1
+    folder: MohamenaBot
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

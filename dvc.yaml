@@ -1,0 +1,23 @@
+stages:
+  parse_corpus:
+    cmd: python src/processing/parse_file.py
+    deps:
+      - src/processing/parse_file.py
+      - src/data/1576751803.pdf
+    outs:
+      - src/data/processed_corpus.json
+
+  validate_corpus:
+    cmd: pytest tests
+    deps:
+      - src/data/processed_corpus.json
+      - tests
+
+  run_chunking_experiment:
+    cmd: python src/processing/chunking.py
+    deps:
+      - src/processing/chunking.py
+      - src/data/processed_corpus.json
+    metrics:
+      - metrics/retrieval_scorecard.json:
+          cache: false

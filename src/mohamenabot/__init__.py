@@ -1,0 +1,1 @@
+"""MohamenaBot application package."""
